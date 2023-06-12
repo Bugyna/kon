@@ -14,8 +14,11 @@ void kon_init() {
 	
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_BLACK, COLOR_RED);
 	keypad(stdscr, TRUE);
-	attron(COLOR_PAIR(1));
+	// attron(COLOR_PAIR(1));
+	// attron(COLOR_PAIR(2));
+	curs_set(FALSE);
 }
 
 
@@ -32,8 +35,12 @@ int main() {
 		// c = getch();
 		// c = get_wch();
 		get_wch(&c);
+		clear_cursor(&buffer);
 		// mvaddch(0, 0, c);
 		handle_input(&buffer, c);
+		render_cursor(&buffer);
+		// mvchgat(0, 0, 1, A_REVERSE, 0, NULL);
+		refresh();
 		
 	}
 

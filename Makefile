@@ -8,5 +8,8 @@ main: *.c *.h
 	$(CC) main.c $(CFLAGS) $(CLIBS) $(IGNORE) -o main
 
 
+debug: *.c *.h
+	$(CC) main.c $(CFLAGS) $(CLIBS) $(IGNORE) -g -o main
+
 run:
 	./main

@@ -8,6 +8,34 @@
 
 
 
+#define REPEAT(fn, n, ...) for (int i = 0; i < n; i++) fn(...);
+
+
+void delete_key(BUFFER* b, const wint_t c)
+{
+	wchar_t ch = L' ';
+	if (b->c->x - 1 < 0) ch = L' ';
+	else ch = b->line->text[b->c->x-1];
+
+	line_delete(b, b->line, b->c, ch);
+	
+	move(b->c->ry, b->c->rx);
+	// if (ch != L'\t')
+		addch(' ');
+	// move(b->c->ry, b->c->rx);
+}
+
+
+void add_key(BUFFER* b, const wint_t c)
+{
+	// mvadd_wch(0, 0, c);
+	// mvwadd_wch(stdscr, 0, 0, c);
+	line_add(b, b->line, b->c, c);
+	// mvaddwstr(b->c->ry, b->c->rx-1, b->line->text+b->c->x-1);
+	render_line(b);
+	// mvaddwstr(b->c->ry, b->c->rx, b->line->text);
+}
+
 
 void handle_input(BUFFER* b, const wint_t c)
 {
@@ -34,42 +62,24 @@ void handle_input(BUFFER* b, const wint_t c)
 			// break;
 
 					
-		// case KEY_RIGHT:
-			// column_index += 1;
-			// buffer.index += 1;
-			// move(row_index, column_index);
-			// break;
+		case KEY_RIGHT:
+			move_right(b);
+			break;
 			
-		// case KEY_LEFT:
-			// // printw("%d", column);
-			// if (column_index-1 >= 0) { 
-				// column_index -= 1;
-				// buffer.index -= 1;
-				// move(row_index, column_index);
-			// }
-			// break;
+		case KEY_LEFT:
+			move_left(b);
+		break;
 			
-		// case KEY_DOWN:
-			// row_index += 1;
-			// move(row_index, column_index);
-			// break;
+		case KEY_DOWN:
+			move_down(b);
+			break;
 
-		// case KEY_UP:
-			// row_index -= 1;
-			// move(row_index, column_index);
-			// break;
+		case KEY_UP:
+			move_up(b);
+			break;
 		
 		case KEY_BACKSPACE: case 127:
-			// delete_char(&buffer, ' ');
-			// b->c->x--;
-			// b->c->rx--
-			ch = b->line->text[b->c->x-1];
-			line_delete(b, b->line, b->c, ch);
-			
-			move(b->c->ry, b->c->rx);
-			if (ch != L'\t')
-				addch(' ');
-			move(b->c->ry, b->c->rx);
+			delete_key(b, c);
 			break;
 
 
@@ -84,16 +94,12 @@ void handle_input(BUFFER* b, const wint_t c)
 		case 10: // Enter
 			// insert_char(&buffer, '\n');
 			// line_add(b->line, b->c, c);
-			buffer_create_new_line(b);
-			move_down(b, 1);
+			// buffer_create_new_line(b);
+			move_down(b);
 			break;
 			
 		default:
-			// mvadd_wch(0, 0, c);
-			// mvwadd_wch(stdscr, 0, 0, c);
-			line_add(b, b->line, b->c, c);
-			mvaddwstr(b->c->ry, b->c->rx-1, b->line->text+b->c->x-1);
-			// mvaddwstr(b->c->ry, b->c->rx, b->line->text);
+			add_key(b, c);
 			break;
 	}
 }
